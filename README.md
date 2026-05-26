@@ -293,3 +293,28 @@ Example structure:
 - `save_json_log.py` keeps database persistence separate from computer vision inference.
 - SQLite was chosen to keep setup simple and avoid extra dependencies.
 - If you later add PostgreSQL or MySQL support, that should be implemented inside `save_json_log.py` without changing the detector pipeline.
+
+
+## Part 2 — Assessment Questions
+
+### Q1: Choosing the Right Approach
+
+For this problem, I would start with object detection to locate each product on the assembly line, then pass the cropped region to a binary classification model that answers one simple question: label present or not. This two-stage approach keeps each model focused on a narrow task, which tends to perform better than asking one model to do everything at once. Detection handles the "where is the product" problem, and classification handles the "what is its state" problem — clean separation of concerns. If this pipeline underperforms, my fallback would be to try an anomaly detection approach: train only on labeled products as the "normal" baseline, so anything that looks different (i.e., missing a label) gets flagged as an anomaly. This works well when defective samples are rare and hard to collect in large numbers.
+
+---
+
+### Q2: Debugging a Poorly Performing Model
+
+The first thing I would check is whether the training images and the new factory images actually look the same — differences in lighting, camera angle, or image resolution are the most common culprits and are easy to miss. I would plot a sample of training images alongside the failing test images side by side to spot any obvious visual shift. Next, I would look at the confusion matrix to understand how the model is failing — is it always predicting one class, or is it randomly wrong? I would also check if the 1000 training images were diverse enough, or if they all came from the same shift, same camera, or same lighting condition, which would mean the model never learned to generalize. Finally, I would run the model on a small hand-labeled set of the new factory images and measure precision and recall separately to get a clearer picture than overall accuracy alone.
+
+---
+
+### Q3: Accuracy vs Real Risk
+
+Accuracy is the wrong metric here, and the numbers prove it — missing 1 in 10 defective products sounds small until you realize that in a manufacturing line running thousands of units, that translates to a serious volume of defects reaching customers. The metric I would focus on instead is recall, which measures how many actual defects the model correctly catches out of all real defects. In quality control, a false negative — letting a bad product through — is far more costly than a false positive — stopping a good product for re-inspection. I would also look at the F-beta score with beta greater than 1, which explicitly weights recall more heavily than precision to reflect this asymmetry. The business cost of a recall or a customer complaint almost always outweighs the cost of a brief line stoppage, so the metric needs to reflect that priority.
+
+---
+
+### Q4: Annotation Edge Cases
+
+I would remove heavily blurry images from the training set but keep partially visible ones with careful handling. Blurry images are genuinely ambiguous — even a skilled human annotator cannot reliably say whether a label is present or not, so feeding that noise to a model only teaches it to be uncertain. Partially visible objects are a different story: they actually reflect real factory conditions where a product might be at the edge of the frame or mid-transition on the belt, so training on them improves robustness. The trade-off is annotation cost and consistency — partial objects take more time to label and different annotators may label them differently, which introduces noise of its own. My approach would be to set a clear rule, such as "include if at least 60% of the product is visible and the label region is discernible," so the dataset stays both realistic and reliably annotated.
