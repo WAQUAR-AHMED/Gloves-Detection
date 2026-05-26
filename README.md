@@ -69,7 +69,7 @@ This would make the system more spatially aware and better at confirming that th
 
 Annotated sample from this repository:
 
-![Demo Annotation](assets\Trial_annotated.jpg)
+![Demo Annotation](assets/Trial_annotated.jpg)
 
 The JSON output contains:
 
