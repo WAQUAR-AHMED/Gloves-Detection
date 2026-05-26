@@ -9,7 +9,11 @@ venv/
 .env
 
 # Generated outputs
-outputs/
+outputs/*
+!outputs/.gitkeep
+!outputs/json_logs/
+outputs/json_logs/*
+!outputs/json_logs/.gitkeep
 *.db
 
 # Local datasets and sample inputs

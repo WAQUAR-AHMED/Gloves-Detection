@@ -36,6 +36,7 @@ MODELS_DIR = PROJECT_DIR / "Models"
 DEFAULT_GLOVE_MODEL = MODELS_DIR / "best.pt"
 DEFAULT_POSE_MODEL = "Models/yolo11m-pose.pt"
 DEFAULT_OUTPUT_DIR = PROJECT_DIR / "outputs"
+DEFAULT_JSON_OUTPUT_DIRNAME = "json_logs"
 DEFAULT_CONF_CONFIG_PATH = PROJECT_DIR / "class_confidence_config.yaml"
 
 GLOVES_ALIASES = {"gloves", "glove", "gloved"}
@@ -374,8 +375,10 @@ def main() -> int:
     source = Path(args.source)
     glove_model_path = Path(args.glove_model)
     output_dir = Path(args.output_dir)
+    json_output_dir = output_dir / DEFAULT_JSON_OUTPUT_DIRNAME
     conf_config_path = Path(args.conf_config)
     output_dir.mkdir(parents=True, exist_ok=True)
+    json_output_dir.mkdir(parents=True, exist_ok=True)
 
     if not glove_model_path.exists():
         LOGGER.error("Glove model not found: %s", glove_model_path)
@@ -429,7 +432,7 @@ def main() -> int:
         image_log["gloves_count"] = gloves_count
         image_log["no_gloves_count"] = no_gloves_count
 
-        out_json = output_dir / f"{image_path.stem}.json"
+        out_json = json_output_dir / f"{image_path.stem}.json"
         out_json.write_text(json.dumps(image_log, indent=2), encoding="utf-8")
         if save_json_log_to_database is not None:
             save_json_log_to_database(image_log, LOGGER)
@@ -443,7 +446,7 @@ def main() -> int:
             no_gloves_count,
         )
 
-    batch_json = output_dir / "detections_all.json"
+    batch_json = json_output_dir / "detections_all.json"
     batch_json.write_text(json.dumps(all_logs, indent=2), encoding="utf-8")
     LOGGER.info("Saved batch log to %s", batch_json)
     return 0

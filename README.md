@@ -61,8 +61,8 @@ This would make the system more spatially aware and better at confirming that th
   - `mixed`
   - `no_hand_detection`
 - Annotated images in `outputs/`
-- One JSON log per image
-- Batch JSON output in `outputs/detections_all.json`
+- One JSON log per image in `outputs/json_logs/`
+- Batch JSON output in `outputs/json_logs/detections_all.json`
 - Optional database persistence of JSON logs
 
 ## Example Output
@@ -138,7 +138,8 @@ Interpretation:
 - `save_json_log.py`: separate database logging script
 - `.env.example`: optional database configuration template
 - `Models/`: trained weights
-- `outputs/`: annotated images and JSON logs
+- `outputs/`: annotated images
+- `outputs/json_logs/`: per-image JSON logs and batch JSON output
 
 ## Setup
 
@@ -242,7 +243,7 @@ venv\Scripts\python.exe .\glove_pose_detector.py --image .\image\trial2.jpg
 
 When `pose_glove_detector.py` finishes an image, it:
 
-1. saves the JSON file to `outputs/`
+1. saves the JSON file to `outputs/json_logs/`
 2. checks database configuration
 3. inserts the same JSON record into the database if enabled
 
@@ -251,7 +252,7 @@ When `pose_glove_detector.py` finishes an image, it:
 You can save an existing JSON log manually:
 
 ```powershell
-venv\Scripts\python.exe .\save_json_log.py --json-file .\outputs\trail6.json
+venv\Scripts\python.exe .\save_json_log.py --json-file .\outputs\json_logs\trail6.json
 ```
 
 ## JSON Log Format
