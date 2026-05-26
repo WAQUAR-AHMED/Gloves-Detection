@@ -1,0 +1,19 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+
+# Local environment
+.env
+
+# Generated outputs
+outputs/
+*.db
+
+# Local datasets and sample inputs
+Dataset/
+image/
+
+

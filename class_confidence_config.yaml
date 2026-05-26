@@ -1,0 +1,6 @@
+pose_conf: 0.25
+glove_conf:
+  default: 0.4
+  class_conf:
+    gloves: 0.4
+    no_gloves: 0.4
