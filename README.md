@@ -112,7 +112,7 @@ Important note:
 
 Kaggle training notebook:
 
-- `I will add here later`
+- `[Kaggle Notebook link](https://www.kaggle.com/code/waquarahmed1/gloves-and-no-gloves-training-notebook?scriptVersionId=322281248)`
 
 ## Model Performance
 
